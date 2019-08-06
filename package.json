@@ -1,0 +1,16 @@
+{
+  "name": "pto",
+  "version": "1.0.0",
+  "description": "This project is the backend services for a paid time off system. It contains APIs for regular employees to request time off and an admin to approve or reject.",
+  "main": "index.js",
+  "repository": "https://github.com/sdunstan/pto.git",
+  "author": "steve_dunstan@yahoo.com",
+  "license": "None",
+  "dependencies": {
+    "express": "^4.17.1",
+    "supertest": "^4.0.2",
+    "swagger-routes-express": "^3.0.3",
+    "tape": "^4.11.0",
+    "yamljs": "^0.3.0"
+  }
+}

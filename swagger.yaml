@@ -1,0 +1,126 @@
+---
+swagger: "2.0"
+info:
+  description: This is a simple PTO system that can track employee sick and vacation time. An employee can request sick or vacation time up to their | current allowed allocated hours at the granularity of hour. An admin can then approve or deny the request.
+  version: 1.0.0
+  title: Simple Paid Time Off System
+  contact:
+    email: steve_dunstan@yahoo.com
+host: virtserver.swaggerhub.com
+basePath: /sdunstan/steves_pto_system/1.0.0
+tags:
+- name: admins
+  description: PTO administrator calls
+- name: regular
+  description: Operations available to regular employees
+- name: super-users
+  description: Operations available to system admins
+schemes:
+- https
+- http
+paths:
+  /pto:
+    post:
+      tags:
+      - regular
+      summary: request time off
+      description: |
+        Employees can request time off at the hour time granularity using this operation.
+      operationId: requestTimeOff
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: ptoRequest
+        required: false
+        schema:
+          $ref: '#/definitions/PTORequest'
+      responses:
+        201:
+          description: request accepted
+        400:
+          description: invalid input parameter
+      # security:
+      # - basicAuth: []
+  /admin:
+    get:
+      tags:
+      - admins
+      summary: return the list of pending pto requests for all employees belonging to the admin's company
+      operationId: adminQueue
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: success querying pending requests
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PTORequestItem'
+        401:
+          description: request not performed by an admin
+  /admin/{id}/{approveOrDeny}:
+    post:
+      tags:
+      - admins
+      summary: approve or deny a request
+      operationId: approveOrDeny
+      parameters:
+      - name: id
+        in: path
+        description: the ID of the PTO request
+        required: true
+        type: integer
+      - name: approveOrDeny
+        in: path
+        description: weather to approve or deny the PTO request
+        required: true
+        type: string
+        enum:
+        - approve
+        - deny
+      responses:
+        201:
+          description: PTO request approved or denied
+        400:
+          description: invalid input parameter
+securityDefinitions:
+  basicAuth:
+    type: basic
+definitions:
+  PTORequest:
+    type: object
+    required:
+    - hoursRequested
+    - type
+    properties:
+      type:
+        type: string
+        enum:
+        - vacation
+        - sick
+      hoursRequested:
+        type: integer
+        minimum: 1
+      startDate:
+        type: string
+        format: date-time
+  PTORequestItem:
+    type: object
+    properties:
+      id:
+        type: integer
+      type:
+        type: string
+        enum:
+        - vacation
+        - sick
+      hoursRequested:
+        type: integer
+        minimum: 1
+      startDate:
+        type: string
+        format: date-time
+      requestedBy:
+        type: string
