@@ -49,7 +49,7 @@ test('POST admin', function(t) {
 
 test('POST admin', function(t) {
     request(app.makeApp())
-        .post('/sdunstan/steves_pto_system/1.0.0/admin/1/dooda')
+        .post('/sdunstan/steves_pto_system/1.0.0/admin/2/deny')
         .send()
         .end((err, res) => {
             t.equal(res.status, 400)

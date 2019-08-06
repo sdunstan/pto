@@ -1,6 +1,8 @@
 const requestTimeOff = (req, res) => {
+    const company = dbo.getCompany('steve') // should grab user from authentication header info 
     const ptoRequest = req.body
-    if (ptoRequest.type === 'vacation') {
+    const count = dbo.insertRequest(company, ptoRequest)
+    if (count === 1) {
         res.status(201)
         res.send('ok')    
     }
@@ -11,7 +13,9 @@ const requestTimeOff = (req, res) => {
 }
 
 const approveOrDeny = (req, res) => {
-    if (req.params['id'] === '1' && req.params['approveOrDeny'] === 'approve') {
+    const company = dbo.getCompany('steve') // should grab user from authentication header info 
+    const count = dbo.updateRequestStatus(company, req.params['id'], req.params['approveOrDeny'])
+    if (count === 1) {
         res.status(201)
         res.send('ok')    
     }
@@ -22,12 +26,46 @@ const approveOrDeny = (req, res) => {
 }
 
 const adminQueue = (req, res) => {
+    const company = dbo.getCompany('steve') // should grab user from authentication header info 
+    const queue = dbo.getAdminRequests(company)
     res.status(200)
-
-    const queue = [
-        {foo: 'bar'}
-    ]
     res.json(queue)
+}
+
+const dbo = {
+    getCompany: function(user) {
+        // Lookup company from user id
+        return 1
+    },
+
+    insertRequest: function(company, ptoRequest) {
+        // "insert into request..."
+        // simulate something going wrong...
+        if (ptoRequest.type === 'vacation') {
+            return 1
+        }
+        else {
+            return 0
+        }
+    },
+
+    updateRequestStatus:  function(company, id, status) {
+        // hardcoded to only allow updte of id === '1'
+        // simulates "update request set status = $status where id = $id"
+        if (id === '1') {
+            return 1
+        }
+        else {
+            return 0
+        }
+    },
+
+    getAdminRequests: function(company) {
+        const queue = [
+            {foo: 'bar'}
+        ]
+        return queue
+    }
 }
 
 module.exports = { requestTimeOff, approveOrDeny, adminQueue } 
